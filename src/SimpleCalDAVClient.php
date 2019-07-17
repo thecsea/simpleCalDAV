@@ -238,20 +238,20 @@ class SimpleCalDAVClient
 		
 		return new CalDAVObject($href, $new_data, $newEtag);
 	}
-	
-	/**
-	 * function delete()
-	 * Delets an event or a TODO from the CalDAV-Server.
-	 *
-	 * Arguments:
-	 * @param $href See CalDAVObject.php
-	 * @param $etag See CalDAVObject.php
-	 *
-	 * Debugging:
-	 * @throws CalDAVException
-	 * For debugging purposes, just sorround everything with try { ... } catch (Exception $e) { echo $e->__toString(); exit(-1); }
-	 */
-	function delete ( $href, $etag )
+
+    /**
+     * function delete()
+     * Delets an event or a TODO from the CalDAV-Server.
+     *
+     * Arguments:
+     * @param string $href See CalDAVObject.php
+     * @param string $etag See CalDAVObject.php
+     * @param bool $forceDelete
+     *
+     * Debugging:
+     * @throws CalDAVException For debugging purposes, just sorround everything with try { ... } catch (Exception $e) { echo $e->__toString(); exit(-1); }
+     */
+	function delete ( $href, $etag, $forceDelete = false )
 	{
 		// Connection and calendar set?
 		if(!isset($this->client)) throw new Exception('No connection. Try connect().');
@@ -262,8 +262,12 @@ class SimpleCalDAVClient
 		if(count($result) == 0) throw new CalDAVException('Can\'t find '.$href.'on server', $this->client);
 		
 		// $etag correct?
-		if($result[0]['etag'] != $etag) { throw new CalDAVException('Wrong entity tag. The entity seems to have changed.', $this->client); }
-	
+		if(!$forceDelete && $result[0]['etag'] != $etag) {
+		    throw new CalDAVException('Wrong entity tag. The entity seems to have changed.', $this->client);
+		}
+
+        $etag = $result[0]['etag'];
+
 		// Do the deletion
 		$this->client->DoDELETERequest($href, $etag);
 	
