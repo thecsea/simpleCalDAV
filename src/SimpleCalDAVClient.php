@@ -43,7 +43,9 @@
 namespace it\thecsea\simple_caldav_client;
 
 
-class SimpleCalDAVClient {
+class SimpleCalDAVClient
+{
+	/** @var CalDAVClient */
 	private $client;
     private $url;
 
@@ -406,6 +408,12 @@ class SimpleCalDAVClient {
 	
 		return $report;
 	}
-}
 
-?>
+	/**
+	 * @return CalDAVClient
+	 */
+	function getCalDavClient()
+	{
+		return $this->client;
+	}
+}
