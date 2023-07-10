@@ -230,7 +230,7 @@ class SimpleCalDAVClient {
 		$newEtag = $this->client->DoPUTRequest( $href, $new_data, $etag );
 
 		// PUT-request successfull?
-		if ( $this->client->GetHttpResultCode() != '204' && $this->client->GetHttpResultCode() != '200' )
+		if ( $this->client->GetHttpResultCode() != '204' && $this->client->GetHttpResultCode() != '200' && $this->client->GetHttpResultCode() != '201' )
 		{
 			throw new CalDAVException('Recieved unknown HTTP status', $this->client);
 		}
@@ -412,6 +412,22 @@ class SimpleCalDAVClient {
 		foreach($results as $event) $report[] = new CalDAVObject($this->url.$event['href'], $event['data'], $event['etag']);
 
 		return $report;
+	}
+
+	function getEntryByHref($href)
+	{
+		// Connection and calendar set?
+		if(!isset($this->client)) throw new Exception('No connection. Try connect().');
+		if(!isset($this->client->calendar_url)) throw new Exception('No calendar selected. Try findCalendars() and setCalendar().');
+
+		// Does $href exist?
+		$result = $this->client->GetEntryByHref($href, true);
+		if ( $this->client->GetHttpResultCode() == '200' );
+		else if ( $this->client->GetHttpResultCode() == '404' ) throw new CalDAVException('Can\'t find '.$href.' on the server', $this->client);
+		else throw new CalDAVException('Recieved unknown HTTP status', $this->client);
+
+		$entry = array_shift($result);
+		return $entry;
 	}
 }
 

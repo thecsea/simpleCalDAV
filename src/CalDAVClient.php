@@ -344,7 +344,7 @@ class CalDAVClient {
    *
    * @return bool|string The content of the response from the server
    */
-  function DoRequest( $url = null ) {
+  function DoRequest( $url = null, $forceBody = false ) {
       if (is_null($url)) {
           $url = $this->full_url;
       }
@@ -357,7 +357,7 @@ class CalDAVClient {
       curl_setopt($this->ch, CURLOPT_CUSTOMREQUEST, $this->requestMethod);
 
       // Empty body. If not used, cURL will spend ~5s on this request
-      if ($this->requestMethod == 'HEAD' || empty($this->body) ) {
+      if (!$forceBody && ($this->requestMethod == 'HEAD' || empty($this->body)) ) {
           curl_setopt($this->ch, CURLOPT_NOBODY, TRUE);
       } else {
           curl_setopt($this->ch, CURLOPT_NOBODY, FALSE);
@@ -460,10 +460,10 @@ class CalDAVClient {
    *
    * @param string $url The URL to GET
    */
-  function DoGETRequest( $url ) {
+  function DoGETRequest( $url, $forceBody = false ) {
       $this->body = "";
       $this->requestMethod = "GET";
-      return $this->DoRequest( $url );
+      return $this->DoRequest( $url, $forceBody );
   }
 
 
@@ -506,7 +506,7 @@ class CalDAVClient {
           $save_request = $this->httpRequest;
           $save_response_headers = $this->httpResponseHeaders;
           $save_http_result = $this->httpResultCode;
-          $this->DoHEADRequest( $url );
+          $this->DoGETRequest( $url );
           if ( preg_match( '{^Etag:\s+"([^"]*)"\s*$}im', $this->httpResponseHeaders, $matches ) ) $etag = $matches[1];
 		  else if ( preg_match( '{^ETag:\s+([^\s]*)\s*$}im', $this->httpResponseHeaders, $matches ) ) $etag = $matches[1];
           /*
@@ -1106,9 +1106,9 @@ EOFILTER;
    *
    * @return string The iCalendar of the calendar entry
    */
-  function GetEntryByHref( $href ) {
+  function GetEntryByHref( $href, $forceBody = false ) {
       //$href = str_replace( rawurlencode('/'),'/',rawurlencode($href));
-      $response = $this->DoGETRequest( $href );
+      $response = $this->DoGETRequest( $href, $forceBody );
 
 	  $report = array();
 
@@ -1136,7 +1136,7 @@ EOFILTER;
           $this->httpResultCode = $save_http_result;
       }
 
-	  $report = array(array('etag'=>$etag));
+	  $report = array(array('etag' => $etag, 'body' => $this->httpResponseBody));
 
       return $report;
   }
