@@ -129,7 +129,7 @@ class CalDAVClient {
                   CURLOPT_MAXREDIRS => 2,
                   CURLOPT_FORBID_REUSE => FALSE,
                   CURLOPT_RETURNTRANSFER => TRUE,
-                  CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                  CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_0,
                   CURLOPT_HTTPAUTH =>
                   isset($options['auth']) ?  $options['auth'] :
                   (CURLAUTH_BASIC | CURLAUTH_DIGEST),
