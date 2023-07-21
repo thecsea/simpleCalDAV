@@ -383,10 +383,11 @@ class CalDAVClient {
       $response = curl_exec($this->ch);
 
       if (FALSE === $response) {
-          // TODO better error handling
-          log_message('ERROR', 'Error requesting ' . $url . ': '
-                  . curl_error($this->ch));
-          return false;
+          throw new CalDAVException(
+              'curl error: ' . curl_error($this->ch) .
+              ', request method: ' . $this->requestMethod .
+              ', url: ' . $url, $this
+          );
       }
 
       $info = curl_getinfo($this->ch);
