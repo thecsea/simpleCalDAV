@@ -18,6 +18,7 @@ namespace it\thecsea\simple_caldav_client\includes;
 *
 * @package   awl
 */
+#[\AllowDynamicProperties]
 class XMLDocument {
 
   /**#@+
