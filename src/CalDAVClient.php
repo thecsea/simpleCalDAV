@@ -379,6 +379,7 @@ class CalDAVClient {
 
 	  // Save Request
 	  curl_setopt($this->ch, CURLINFO_HEADER_OUT, TRUE);
+      curl_setopt($this->ch, CURLOPT_HTTP09_ALLOWED, true);
 
       $response = curl_exec($this->ch);
 
