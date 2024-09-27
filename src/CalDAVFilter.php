@@ -25,8 +25,8 @@
 namespace it\thecsea\simple_caldav_client;
 
 class CalDAVFilter {
-	private $resourceType;
-	private $mustIncludes = array();
+    private $resourceType;
+    private $mustIncludes = array();
     
     /*
      * @param $type The type of resource you want to get. Has to be either
@@ -34,75 +34,77 @@ class CalDAVFilter {
      *               You have to decide.
      */
     public function __construct ( $type ) {
-		$this->resourceType = $type;
-	}
-	
-	/**
-	 * function mustInclude()
-	 * Specifies that a certin property has to be included. The content of the
+        $this->resourceType = $type;
+    }
+    
+    /**
+     * function mustInclude()
+     * Specifies that a certin property has to be included. The content of the
      * property is irrelevant.
      *
      * Only call this function and mustIncludeMatchSubstr() once per property!
-	 * 
-	 * Examples:
+     * 
+     * Examples:
      * mustInclude("SUMMARY"); specifies that all returned resources have to
      * have the SUMMARY-property.
      * mustInclude("LOCATION "); specifies that all returned resources have to
      * have the LOCATION-property.
-	 * 
-	 * Arguments:
-	 * @param string $field The name of the property. For a full list of valid
+     * 
+     * Arguments:
+     * @param string $field The name of the property. For a full list of valid
      *               property names see http://www.rfcreader.com/#rfc5545_line3622
      *               Note that the server might not support all of them.
      * @param bool $inverse Makes the effect inverse: The resource must NOT include
      *                 the property $field
-	 */
+     */
     public function mustInclude ( $field, $inverse = FALSE ) {
         $this->mustIncludes[] = array("mustInclude", $field, $inverse);
     }
     
     /**
-	 * function mustIncludeMatchSubstr()
-	 * Specifies that a certin property has to be included and that its value
+     * function mustIncludeMatchSubstr()
+     * Specifies that a certin property has to be included and that its value
      * has to match a given substring.
      *
      * Only call this function and mustInclude() once per property!
-	 * 
-	 * Examples:
+     * 
+     * Examples:
      * mustIncludeMatchSubstr("SUMMARY", "a part of the summary"); would return
      * a resource with "SUMMARY:This is a part of the summary" included, but no
      * resource with "SUMMARY:This is a part of the".
-	 * 
-	 * Arguments:
-	 * @param string $field The name of the property. For a full list of valid
+     * 
+     * Arguments:
+     * @param string $field The name of the property. For a full list of valid
      *               property names see http://www.rfcreader.com/#rfc5545_line3622
      *               Note that the server might not support all of them.
      * @param string $substring Substring to match against the value of the property.
      * @param bool $inverse Makes the effect inverse: The property value must NOT
      *                 include the $substring
-	 */
+     */
     public function mustIncludeMatchSubstr ( $field, $substring, $inverse = FALSE ) {
         $this->mustIncludes[] = array("mustIncludeMatchSubstr", $field, $substring, $inverse);
     }
     
     /**
-	 * function mustOverlapWithTimerange()
-	 * Specifies that the resource has to overlap with a given timerange.
+     * function mustOverlapWithTimerange()
+     * Specifies that the resource has to overlap with a given timerange.
      * @see http://www.rfcreader.com/#rfc4791_line3944
      *
      * Only call this function once per CalDAVFilter-object!
-	 * 
-	 * Arguments:
-	 * @param string $start The starting point of the time interval. Must be in the format yyyymmddThhmmssZ and should be in
-	 *              	GMT. If omitted the value is set to -infinity.
-	 * @param string $end The end point of the time interval. Must be in the format yyyymmddThhmmssZ and should be in
-	 *              	GMT. If omitted the value is set to +infinity.
-	 */
+     * 
+     * Arguments:
+     * @param string $start The starting point of the time interval. Must be in the format yyyymmddThhmmssZ and should be in
+     *                  GMT. If omitted the value is set to -infinity.
+     * @param string $end The end point of the time interval. Must be in the format yyyymmddThhmmssZ and should be in
+     *                  GMT. If omitted the value is set to +infinity.
+     */
     public function mustOverlapWithTimerange ( $start = NULL, $end = NULL) {
-        // Are $start and $end in the correct format?
-		if ( ( isset($start) and ! preg_match( '#^\d\d\d\d\d\d\d\dT\d\d\d\d\d\dZ$#', $start, $matches ) )
-		  or ( isset($end) and ! preg_match( '#^\d\d\d\d\d\d\d\dT\d\d\d\d\d\dZ$#', $end, $matches ) ) )
-		{ trigger_error('$start or $end are in the wrong format. They must have the format yyyymmddThhmmssZ and should be in GMT', E_USER_ERROR); }
+            // Are $start and $end in the correct format?
+        if ( ( isset($start) and ! preg_match( '#^\d\d\d\d\d\d\d\dT\d\d\d\d\d\dZ$#', $start, $matches ) )
+          or ( isset($end) and ! preg_match( '#^\d\d\d\d\d\d\d\dT\d\d\d\d\d\dZ$#', $end, $matches ) ) )
+        { 
+            trigger_error('$start or $end are in the wrong format. They must have the format yyyymmddThhmmssZ and should be in GMT', E_USER_ERROR);
+        }
         
         $this->mustIncludes[] = array("mustOverlapWithTimerange", $start, $end);
     }

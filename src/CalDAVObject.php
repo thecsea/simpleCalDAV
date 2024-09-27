@@ -24,30 +24,30 @@
 namespace it\thecsea\simple_caldav_client;
 
 class CalDAVObject {
-	private $href;
-	private $data;
-	private $etag;
-	
-	public function __construct ($href, $data, $etag) {
-		$this->href = $href;
-		$this->data = $data;
-		$this->etag = $etag;
-	}
-	
-	
-	// Getter
-	
-	public function getHref () {
-		return $this->href;
-	}
-	
-	public function getData () {
-		return $this->data;
-	}
-	
-	public function getEtag () {
-		return $this->etag;
-	}
+    private $href;
+    private $data;
+    private $etag;
+    
+    public function __construct ($href, $data, $etag) {
+        $this->href = $href;
+        $this->data = $data;
+        $this->etag = $etag;
+    }
+    
+    
+    // Getter
+    
+    public function getHref () {
+        return $this->href;
+    }
+    
+    public function getData () {
+        return $this->data;
+    }
+    
+    public function getEtag () {
+        return $this->etag;
+    }
 }
 
 ?>
