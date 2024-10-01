@@ -324,6 +324,33 @@ class SimpleCalDAVClient {
     }
 
     /**
+	 * function getEventByGuid( $guid )
+	 * Gets an events from the CalDAV-Server with specified UID.
+	 *
+	 * Arguments:
+	 * @param string $guid UID of the iCal requested.
+	 *
+	 * Return value:
+	 * @return array an array of arrays containing ['href'], ['etag'] and the iCal in ['data'] for the found event.
+	 *	 
+	 */
+	function getEventByGuid ( $guid )
+	{
+		// Connection and calendar set?
+		if(!isset($this->client)) throw new CalDAVException('No connection. Try connect().', $this->client);
+		if(!isset($this->client->calendar_url)) throw new CalDAVException('No calendar selected. Try findCalendars() and setCalendar().', $this->client);
+
+		// Get it!
+		$data = $this->client->GetEntryByUid($guid);
+		foreach ($data as &$element) {
+			$element['href'] = $this->client->calendar_url . $element['href'];
+			unset($element);
+		}
+		return $data;
+
+	}
+    
+    /**
      * function getTODOs()
      * Gets a all TODOs from the CalDAV-Server which lie in a defined time interval and match the
      * given criteria.
