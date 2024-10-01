@@ -62,6 +62,9 @@ class CalDAVClient {
     private $httpResponseBody = '';
 
     protected $parser; // our XML parser object
+    protected $request_url = "";
+    protected $xmlnodes = array();
+    protected $xmltags = array();
 
     // Requests timeout
     private $timeout;
@@ -176,11 +179,10 @@ class CalDAVClient {
         $headers = preg_split('/\r?\n/', $headers);
 
         // DAV header(s)
-        $dav_header = preg_grep('/^DAV:/', $headers);
+        $dav_header = preg_grep('/^DAV:/i', $headers); // /i for case insensitive as some servers (example Nextcloud) do not send uppercase headers
         if (is_array($dav_header)) {
             $dav_header = array_values($dav_header);
-            $dav_header = preg_replace('/^DAV: /', '', $dav_header);
-
+            $dav_header = preg_replace('/^DAV: /i', '', $dav_header); // /i for case insensitive
             $dav_options = array();
 
             foreach ($dav_header as $d) {
